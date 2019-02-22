@@ -10,7 +10,7 @@
     <v-list dense>
       <template v-for="item in items">
         <v-list-group no-action sub-group
-                      v-if="item.children"
+                      v-if="item.children 25"
                       v-model="item.model"
                       :key="item.text"
                       :prepend-icon="item.model ? item.icon : item['icon-alt']"
