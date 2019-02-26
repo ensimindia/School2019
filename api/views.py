@@ -1,15 +1,18 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from itertools import chain
 
 # Create your views here.
+from django.db import IntegrityError
+from django.http import JsonResponse
 
-from rest_framework import generics, status, viewsets, permissions
+from rest_framework import generics, status, viewsets, permissions, serializers
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.models import ClassName, Subject, ClassRoom
+from api.models import ClassName, Subject, ClassRoom, ChildParentsRelation
 from api.serializers import UserSerializer, ClassNameSerializers, SubjectSerializers, ClassRoomSerializers
 
 
@@ -55,6 +58,18 @@ class UserView(generics.RetrieveUpdateAPIView):
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED, data={"msg": "Unauthorized Access"})
 
+class UserListView(APIView):
+     permission_classes = (IsAuthenticated, IsAdminUser)
+
+     def get(self, request):
+         user = User.objects.values("id","username", "first_name","last_name","email")
+         students = user.filter(groups__name="Student")
+         teachers = user.filter(groups__name="Teacher")
+         parents = user.filter(groups__name="Parent")
+         context = {"Students": list(students), "Teachers": list(teachers), "Parents": list(parents)}
+         return JsonResponse(context, status = status.HTTP_200_OK)
+
+
 
 class LoginView(APIView):
     # permission_classes = (IsAuthenticated, )
@@ -68,6 +83,7 @@ class LoginView(APIView):
         else:
             return Response({'error': "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 # This api will be used by all user to see list of classes
 # Path: api/classes
 class ClassNameView(generics.ListAPIView):
@@ -75,10 +91,12 @@ class ClassNameView(generics.ListAPIView):
     serializer_class = ClassNameSerializers
     queryset = ClassName.objects.all()
 
+
 class SubjectView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, permissions.DjangoModelPermissions)
     serializer_class = SubjectSerializers
     queryset = Subject.objects.all()
+
 
 class ClassRoomView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser, permissions.DjangoModelPermissions)
@@ -86,5 +104,30 @@ class ClassRoomView(viewsets.ModelViewSet):
     queryset = ClassRoom.objects.all()
 
 
+class ChildParentsRelationView(APIView):
+    permission_classes = {IsAuthenticated, IsAdminUser}
 
+    def get(self, request):
+
+        parents = list(User.objects.values("id", "first_name", "last_name").filter(groups__name="Parent"))
+        students = User.objects.values("id", "first_name", "last_name").filter(groups__name="Student")
+        students = list(students.exclude(id__in = ChildParentsRelation.objects.values("student")))
+
+        return JsonResponse({"parents": parents, "students": students}, safe=False)
+
+    def post(self, request):
+        try:
+            student = User.objects.filter(groups__name="Student").get(id = request.data.get("student"))
+            parent = User.objects.filter(groups__name="Parent").get(id = request.data.get("parent"))
+            record = ChildParentsRelation.objects.filter(student = student, parent= parent)
+            if record:
+                return JsonResponse({"detail": "Data already available"}, status=status.HTTP_302_FOUND)
+            else:
+                a = ChildParentsRelation(student= student, parent= parent)
+                a.save()
+                return JsonResponse({"detail": "Data saved successfully"},status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return JsonResponse({"detail": "Please provide valid id"},status = status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return JsonResponse({"detail": "Please provide valid student and parent id"}, status=status.HTTP_400_BAD_REQUEST)
 

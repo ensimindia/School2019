@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         try:
             group = Group.objects.get(name=request.data.get("role"))
         except:
-            raise serializers.ValidationError({"msg": "Please provide valid type"})
+            raise serializers.ValidationError({"msg": "Please provide valid role"})
         user.save()
         user.groups.add(group)
         Token.objects.create(user=user)
