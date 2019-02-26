@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import user from './models/user'
+import login from './models/login'
 
 Vue.use(Vuex)
 
@@ -69,6 +70,7 @@ export const store = new Vuex.Store({
     }
   },
   modules: {
-    user
+    user,
+    login
   }
 })

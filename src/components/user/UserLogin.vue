@@ -60,7 +60,7 @@ export default {
       const { username, password } = this
       this.$store.dispatch('AUTH_USER_REQUEST', {username, password})
         .then((response) => {
-          console.log(response)
+          //console.log(response)
           this.$router.push('/dashboard')
         })
         .catch(err => {

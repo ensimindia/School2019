@@ -16,7 +16,7 @@ const mutations = {
   },
   user_auth_success (state, data) {
     state.userstatus = 'success'
-    state.usertoken = data.token
+    state.usertoken = data.usertoken
     state.useruseid = data.useruseid
     state.userrole = data.userrole
   },

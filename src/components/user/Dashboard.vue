@@ -69,12 +69,29 @@ export default {
         fstname: '',
         lstname: '',
         email: '',
-        username: ''
+        username: '',
+        UserId: ''
       }
     }
   },
-  created: {
-    
+  created() {
+    this.onload_methods()
+  },
+  methods: {
+    onload_methods: function() {
+      const UserId = this.$store.getters.useruseid
+      const Usertoken = this.$store.getters.usertoken
+      this.$store.dispatch('USER_DETAILS', {UserId, Usertoken})
+        .then((response) => {
+          this.user.fstname = response.data['first_name']
+          this.user.lstname = response.data['last_name']
+          this.user.email = response.data['email']
+          this.user.username = response.data['username']
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
 }
 </script>
