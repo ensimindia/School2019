@@ -11,7 +11,6 @@ import DatetimePicker from 'vuetify-datetime-picker'
 import 'vuetify-datetime-picker/src/stylus/main.styl'
 import Vuex from 'vuex'
 import { store } from './store/store'
-import Axios from 'axios'
 
 Vue.config.productionTip = false
 

@@ -9,21 +9,24 @@ export const store = new Vuex.Store({
   state: {
     token: localStorage.getItem('token') || '',
     status: '',
-    userid: localStorage.getItem('userid') || ''
+    userid: localStorage.getItem('userid') || '',
+    users: []
   },
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     token: state => state.token,
-    userid: state => state.userid
+    userid: state => state.userid,
+    userlist: state => state.users
   },
   mutations: {
     auth_request (state) {
       state.status = 'loading'
     },
-    auth_success (state, token) {
+    auth_success (state, data) {
       state.status = 'success'
-      state.token = token
+      state.token = data.token
+      state.userid = data.userid
     },
     auth_error (state) {
       state.status = 'error'
@@ -31,6 +34,9 @@ export const store = new Vuex.Store({
     logout (state) {
       state.status = ''
       state.token = ''
+    },
+    FETCH_USERS (state, data) {
+      state.users = data.response
     }
   },
   actions: {
@@ -45,9 +51,14 @@ export const store = new Vuex.Store({
           .then(resp => {
             const token = resp.data.token
             const userid = resp.data.userid
+            const role = resp.data.role
+            const err = ''
+            if (role !== 'Admin') {
+              reject(err)
+            }
             localStorage.setItem('token', token)
             localStorage.setItem('userid', userid)
-            commit('auth_success', token)
+            commit('auth_success', { 'token': token, 'userid': userid })
             resolve(resp)
           })
           .catch(err => {
@@ -63,8 +74,27 @@ export const store = new Vuex.Store({
         commit('logout')
         localStorage.removeItem('token')
         localStorage.removeItem('userid')
-        delete axios.defaults.headers.common['Authorization']
         resolve()
+      })
+    },
+    fetchUsers ({commit}, user) {
+      return new Promise((resolve, reject) => {
+        commit('auth_request')
+        axios({
+          url: 'http://10.195.37.114:8000/api/users',
+          params: { role: 'Student' },
+          method: 'GET',
+          headers: {
+            Authorization: 'Token ' + user
+          }
+        })
+          .then(resp => {
+            commit('FETCH_USERS', { 'response': resp.data })
+            resolve(resp)
+          })
+          .catch(err => {
+            reject(err)
+          })
       })
     }
   }

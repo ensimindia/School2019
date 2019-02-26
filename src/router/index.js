@@ -2,8 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import adminLogin from '@/components/adminLogin'
 import adminDashboard from '@/components/adminDashboard'
-import addUser from '@/components/addUser'
-import userList from '@/components/userList'
+import addStudent from '@/components/addStudent'
+import studentList from '@/components/studentList'
+import addParent from '@/components/addParent'
+import parentList from '@/components/parentList'
+import addTeacher from '@/components/addTeacher'
+import teacherList from '@/components/teacherList'
 import classList from '@/components/classList'
 import addSubject from '@/components/addSubject'
 import subjectList from '@/components/subjectList'
@@ -27,14 +31,34 @@ export default new Router({
       component: adminDashboard
     },
     {
-      path: '/addUser',
-      name: 'addUser',
-      component: addUser
+      path: '/addStudent',
+      name: 'addStudent',
+      component: addStudent
     },
     {
-      path: '/userList',
-      name: 'userList',
-      component: userList
+      path: '/studentList',
+      name: 'studentList',
+      component: studentList
+    },
+    {
+      path: '/addTeacher',
+      name: 'addTeacher',
+      component: addTeacher
+    },
+    {
+      path: '/teacherList',
+      name: 'teacherList',
+      component: teacherList
+    },
+    {
+      path: '/addParent',
+      name: 'addParent',
+      component: addParent
+    },
+    {
+      path: '/parentList',
+      name: 'parentList',
+      component: parentList
     },
     {
       path: '/classList',

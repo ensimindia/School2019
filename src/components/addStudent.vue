@@ -1,5 +1,5 @@
 <template>
-  <div id="addUser">
+  <div id="addStudent">
     <v-app id="inspire">
       <adminHeader></adminHeader>
       <v-content>
@@ -8,7 +8,7 @@
         >
           <v-flex xs11>
             <div class="font-weight-thin my-2 display-1 text-lg-left" id="s2">
-              Add New User
+              Add New Student
             </div>
           </v-flex>
           <v-layout row wrap>
@@ -19,6 +19,15 @@
             </v-flex>
             <v-flex xs11 pl-3>
               <form>
+                <v-select
+                  v-model="selectUser"
+                  v-validate="'required'"
+                  :items="itemsSelect"
+                  :error-messages="errors.collect('selectUser')"
+                  label="select User"
+                  data-vv-name="selectUser"
+                  required
+                ></v-select>
                 <v-text-field
                   v-model="first_name"
                   v-validate="'required'"
@@ -45,6 +54,7 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="password"
+                  type="password"
                   v-validate="'required|max:30|min:5'"
                   :counter="30"
                   :error-messages="errors.collect('password')"
@@ -65,9 +75,17 @@
 <script>
 import adminHeader from './adminHeader'
 export default {
-  name: 'addUser',
+  selectUser: null,
+  itemsSelect: [
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4'
+  ],
+  name: 'addStudent',
   components: { adminHeader },
   data: () => ({
+    selectUser: '',
     first_name: '',
     last_name: '',
     email: '',
@@ -90,6 +108,9 @@ export default {
           required: () => 'Password can not be empty',
           max: 'The password field may not be greater than 30 characters'
           // custom messages
+        },
+        selectUser: {
+          required: 'Select field is required'
         }
       }
     }
@@ -102,6 +123,7 @@ export default {
       this.$validator.validateAll()
     },
     clear () {
+      this.selectUser = null,
       this.first_name = ''
       this.last_name = ''
       this.email = ''
