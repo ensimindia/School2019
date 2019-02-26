@@ -18,16 +18,24 @@
               </div>
             </v-flex>
             <v-flex xs11 pl-3>
-              <form>
+              <form class="addStudent" @submit.prevent="addStudent">
                 <v-select
-                  v-model="selectUser"
+                  v-model="role"
                   v-validate="'required'"
                   :items="itemsSelect"
-                  :error-messages="errors.collect('selectUser')"
-                  label="select User"
-                  data-vv-name="selectUser"
+                  :error-messages="errors.collect('role')"
+                  label="Select Role"
+                  data-vv-name="role"
                   required
                 ></v-select>
+                <v-text-field
+                  v-model="username"
+                  v-validate="'required'"
+                  :error-messages="errors.collect('username')"
+                  label="User Name"
+                  data-vv-name="username"
+                  required
+                ></v-text-field>
                 <v-text-field
                   v-model="first_name"
                   v-validate="'required'"
@@ -75,17 +83,17 @@
 <script>
 import adminHeader from './adminHeader'
 export default {
-  selectUser: null,
-  itemsSelect: [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4'
-  ],
   name: 'addStudent',
   components: { adminHeader },
   data: () => ({
-    selectUser: '',
+    role: null,
+    itemsSelect: [
+      'Teacher',
+      'Student',
+      'Parent',
+      'Admin'
+    ],
+    username: '',
     first_name: '',
     last_name: '',
     email: '',
@@ -96,6 +104,13 @@ export default {
         // custom attributes
       },
       custom: {
+        role: {
+          required: 'Select field is required'
+        },
+        username: {
+          required: () => 'User Name can not be empty'
+          // custom messages
+        },
         first_name: {
           required: () => 'First Name can not be empty'
           // custom messages
@@ -108,9 +123,6 @@ export default {
           required: () => 'Password can not be empty',
           max: 'The password field may not be greater than 30 characters'
           // custom messages
-        },
-        selectUser: {
-          required: 'Select field is required'
         }
       }
     }
@@ -123,7 +135,8 @@ export default {
       this.$validator.validateAll()
     },
     clear () {
-      this.selectUser = null,
+      this.role = null,
+      this.username = ''
       this.first_name = ''
       this.last_name = ''
       this.email = ''

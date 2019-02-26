@@ -9,7 +9,6 @@
           <v-flex row xs12>
             <div class="font-weight-thin my-2 display-1 text-lg-left" id="s2">
               Student List
-              {{this.$store.getters.userlist}}
             </div>
             <!--<v-alert
               :value="true"
@@ -133,7 +132,6 @@ export default {
     },
     initialize_User: function() {
       this.desserts = this.$store.getters.userlist
-      console.log(this.$store.getters.userlist)
     }
   }
 }

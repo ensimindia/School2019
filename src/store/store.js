@@ -10,14 +10,14 @@ export const store = new Vuex.Store({
     token: localStorage.getItem('token') || '',
     status: '',
     userid: localStorage.getItem('userid') || '',
-    users: []
+    fetchUsers: []
   },
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     token: state => state.token,
     userid: state => state.userid,
-    userlist: state => state.users
+    userlist: state => state.fetchUsers
   },
   mutations: {
     auth_request (state) {
@@ -36,7 +36,7 @@ export const store = new Vuex.Store({
       state.token = ''
     },
     FETCH_USERS (state, data) {
-      state.users = data.response
+      state.fetchUsers = data.response
     }
   },
   actions: {
