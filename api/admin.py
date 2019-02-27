@@ -24,8 +24,7 @@ class childParent(admin.ModelAdmin):
 		#parents = User.objects.all().filter(groups__name='Parent')
 
 
-	list_display = ('student_id', 'parent_id')
-
+	list_display = ('student', 'parent')
 
 class holidayList(admin.ModelAdmin):
 	list_display = ('holiday_title','celebrate_on')
