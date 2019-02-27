@@ -1,4 +1,5 @@
-venv/
+school/settings.py
+*/venv/*
 venv/*
 *.idea/
 *.idea/*
