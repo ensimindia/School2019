@@ -106,6 +106,7 @@ class ChildParentsRelationView(APIView):
 
 
 # A new comment
+# one more comment
 class HolidayView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser, permissions.DjangoModelPermissions)
     serializer_class = HolidaySerializers
