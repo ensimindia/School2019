@@ -105,7 +105,7 @@ class ChildParentsRelationView(APIView):
         return JsonResponse({"parent" : parents, "student": students},safe=False)
 
 
-
+# A new comment
 class HolidayView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser, permissions.DjangoModelPermissions)
     serializer_class = HolidaySerializers
